@@ -1,37 +1,90 @@
 import React from 'react';
 
-const Register=({onRouteChange})=>{
+
+class Register extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state={
+      registerEmail:'',
+      registerPassword:'',
+      registerName:''
+    }
+  }
+
+  onEmailRegister=(event)=>{
+    this.setState({registerEmail  :event.target.value})
+
+  }
+  onPasswordRegister=(event)=>{
+    this.setState({registerPassword:event.target.value})
+
+  }
+  onNameRegister=(event)=>{
+    this.setState({registerName:event.target.value})
+
+  }
+
+  onRegister=()=>{
+    fetch('http://localhost:3006/register',{
+      method:'post',
+      headers:{'Content-type': 'application/json'},
+      body: JSON.stringify({
+        email:this.state.registerEmail,
+        password:this.state.registerPassword,
+        name:this.state.registerName
+      })
+    })
+    .then(response=>response.json())
+    .then(data=>{
+      console.log(data);
+      this.props.registerUser(data);
+      this.props.onRouteChange('Home');
+      
+    })
+    
+  }
+
+   render(){
     return(
-    <article className="mw7 center bg-transparent br3 pa3 pa4-ns mv3 ba b--black-10 shadow-5 w-250 w-70-m w-30-l">
-    <main className="pa4 black-80">
-       <div className="measure">
-       <fieldset id="sign_up" className="ba b--transparent ph0 mh0" >
-         <legend className="f1 fw6 ph0 mh0">Register</legend>
-         <div className="mt3">
-           <label className="db fw6 lh-copy f4" htmlFor="Name">Name</label>
-           <input className="pa2 input-reset  bg-transparent hover-bg-black hover-white w-150 b--black ba" type="text" name="Name"  id="Name"/>
+      <article className="mw7 center bg-transparent br3 pa3 pa4-ns mv3 ba b--black-10 shadow-5 w-250 w-70-m w-30-l">
+      <main className="pa4 black-80">
+         <div className="measure">
+         <fieldset id="sign_up" className="ba b--transparent ph0 mh0" >
+           <legend className="f1 fw6 ph0 mh0">Register</legend>
+           <div className="mt3">
+             <label className="db fw6 lh-copy f4" htmlFor="Name">Name</label>
+             <input
+               onChange={this.onNameRegister}
+              className="pa2 input-reset  bg-transparent hover-bg-black hover-white w-150 b--black ba" type="text" name="Name"  id="Name"/>
+           </div>
+           <div className="mt3">
+             <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
+             <input 
+             onChange={this.onEmailRegister}
+             className="pa2 input-reset  bg-transparent hover-bg-black hover-white w-150 b--black ba" type="email" name="email-address"  id="email-address"/>
+           </div>
+           <div className="mv3">
+             <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
+             <input
+             onChange={this.onPasswordRegister}
+              className="b--black pa2 input-reset ba bg-transparent hover-bg-black hover-white w-150" type="password" name="password"  id="password"/>
+           </div>
+         </fieldset>
+         <div className="">
+           <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib" 
+           type="submit" 
+           value="Register" 
+           onClick={this.onRegister}
+           />
          </div>
-         <div className="mt3">
-           <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
-           <input className="pa2 input-reset  bg-transparent hover-bg-black hover-white w-150 b--black ba" type="email" name="email-address"  id="email-address"/>
-         </div>
-         <div className="mv3">
-           <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
-           <input className="b--black pa2 input-reset ba bg-transparent hover-bg-black hover-white w-150" type="password" name="password"  id="password"/>
-         </div>
-       </fieldset>
-       <div className="">
-         <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib" 
-         type="submit" 
-         value="Register" 
-         onClick={()=>onRouteChange('Home')}
-         />
+         
        </div>
-       
-     </div>
-    </main>
-    </article>
-    )
+      </main>
+      </article>
+      )
+   }
+   
 }
 
 export default Register;

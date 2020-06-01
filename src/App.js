@@ -24,9 +24,19 @@ constructor(){
     imageURL:'',
     box:{},
     route: 'SignIn',
-    SignedIn: false
+    SignedIn: false,
+    user:{
+      id:'',
+      name:'',
+      email:'',
+      password:'',
+      entries:0,
+      joined: ''
+    }
   }
 }
+
+
 
 onInputChange=(event)=>{
   this.setState({input: event.target.value})
@@ -55,11 +65,27 @@ this.setState({box:box});
 onSubmit=()=>{
   this.setState({imageURL:this.state.input})
   app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-  .then(response=>  this.displayBox(this.calculateFaceLocation(response)))
+  .then(response=>{
+     if(response){
+      fetch('http://localhost:3006/image', {
+        method:'put',
+        headers:{'Content-type': 'application/json'},
+        body: JSON.stringify({
+          id:this.state.user.id
+        })
+      })
+      .then(response=>response.json())
+      .then(count=>{
+        this.setState(Object.assign(this.state.user,{entries:count}))
+      })
+
+      
+    }
+  this.displayBox(this.calculateFaceLocation(response))
   .catch(err=>console.log(err))
   
   
-}
+})}
 
 onRouteChange=(route)=>{
   if(route==='SignIn'){
@@ -72,6 +98,18 @@ onRouteChange=(route)=>{
 }
 
 
+registerUser=(data)=>{
+  this.setState({user:{
+    id:data.id,
+    name:data.name,
+    email:data.email,
+    password:data.password,
+    entries:data.entries,
+    joined: data.joined
+  }})
+
+}
+
 
   render(){
   return (
@@ -81,13 +119,13 @@ onRouteChange=(route)=>{
      {this.state.route==='Home' ? 
      <div>
      <Logo />
-     <Rank/>
+     <Rank name={this.state.user.name} entries={this.state.user.entries}/>
      <ImageLink onInputChange={this.onInputChange} onSubmit={this.onSubmit}/>
      <FaceRecognition imageURL={this.state.imageURL} box={this.state.box} />
      </div> :
      (this.state.route==='SignIn' ?
-     <SignIn onRouteChange={this.onRouteChange} />  :
-     <Register onRouteChange={this.onRouteChange} />
+     <SignIn onRouteChange={this.onRouteChange} registerUser={this.registerUser} />  :
+     <Register onRouteChange={this.onRouteChange} registerUser={this.registerUser}/>
      )}
      
     

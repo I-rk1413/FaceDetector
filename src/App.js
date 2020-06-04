@@ -5,35 +5,33 @@ import ImageLink from './Component/ImageLink/ImageLink'
 import Rank from './Component/Rank/Rank'
 import './App.css';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
+
 import FaceRecognition from './Component/FaceRecognition/FaceRecognition';
 import SignIn from './Component/SignIn/SignIn';
 import Register from './Component/Register/Register'
 
-const app = new Clarifai.App({
-  apiKey: '65630fcbe6a1433881006f22888aa3a9'
- });
- 
+
+ const initialState= {
+  input:'',
+  imageURL:'',
+  box:{},
+  route: 'SignIn',
+  SignedIn: false,
+  user:{
+    id:'',
+    name:'',
+    email:'',
+    password:'',
+    entries:0,
+    joined: ''
+  }}
 
 class App extends React.Component {
 
 constructor(){
   super();
-  this.state={
-    input:'',
-    imageURL:'',
-    box:{},
-    route: 'SignIn',
-    SignedIn: false,
-    user:{
-      id:'',
-      name:'',
-      email:'',
-      password:'',
-      entries:0,
-      joined: ''
-    }
-  }
+  this.state= initialState;
+  
 }
 
 
@@ -64,8 +62,15 @@ this.setState({box:box});
  
 onSubmit=()=>{
   this.setState({imageURL:this.state.input})
-  app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-  .then(response=>{
+   fetch('http://localhost:3006/apiHandler', {
+        method:'post',
+        headers:{'Content-type': 'application/json'},
+        body: JSON.stringify({
+          input:this.state.input
+        })
+      })
+   .then(response=>response.json())
+   .then(response=>{
      if(response){
       fetch('http://localhost:3006/image', {
         method:'put',
@@ -78,18 +83,16 @@ onSubmit=()=>{
       .then(count=>{
         this.setState(Object.assign(this.state.user,{entries:count}))
       })
-
-      
-    }
+      .catch(console.log)}
   this.displayBox(this.calculateFaceLocation(response))
-  .catch(err=>console.log(err))
+  
   
   
 })}
 
 onRouteChange=(route)=>{
   if(route==='SignIn'){
-    this.setState({SignedIn:false})
+    this.setState(initialState)
   }
   else if(route==='Home'){
     this.setState({SignedIn:true})
@@ -109,6 +112,10 @@ registerUser=(data)=>{
   }})
 
 }
+
+
+
+
 
 
   render(){

@@ -62,7 +62,7 @@ this.setState({box:box});
  
 onSubmit=()=>{
   this.setState({imageURL:this.state.input})
-   fetch('http://localhost:3006/apiHandler', {
+   fetch('https://nameless-tor-61336.herokuapp.com/apiHandler', {
         method:'post',
         headers:{'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -72,7 +72,7 @@ onSubmit=()=>{
    .then(response=>response.json())
    .then(response=>{
      if(response){
-      fetch('http://localhost:3006/image', {
+      fetch('https://nameless-tor-61336.herokuapp.com/image', {
         method:'put',
         headers:{'Content-type': 'application/json'},
         body: JSON.stringify({

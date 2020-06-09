@@ -22,6 +22,9 @@ constructor(props){
   }
 
   onSubmitSignIn=()=>{
+    if(this.state.signInEmail==='' || this.state.signInPassword===''){
+      return alert('Please provide your credentials')
+    }
     fetch('https://nameless-tor-61336.herokuapp.com/signin',{
       method:'post',
       headers:{'Content-type': 'application/json'},

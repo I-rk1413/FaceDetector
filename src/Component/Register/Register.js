@@ -1,4 +1,5 @@
 import React from 'react';
+import './Register.css';
 
 
 class Register extends React.Component{
@@ -13,10 +14,12 @@ class Register extends React.Component{
   }
 
   onEmailRegister=(event)=>{
+    this.onemailChange(event);
     this.setState({registerEmail  :event.target.value})
 
   }
   onPasswordRegister=(event)=>{
+    this.onPasswordChange(event);
     this.setState({registerPassword:event.target.value})
 
   }
@@ -26,6 +29,9 @@ class Register extends React.Component{
   }
 
   onRegister=()=>{
+    if(this.state.registerName==='' || this.state.registerEmail==='' || this.state.registerPassword===''){
+      return alert('Please fill all the details properly')
+    }
     fetch('https://nameless-tor-61336.herokuapp.com/register',{
       method:'post',
       headers:{'Content-type': 'application/json'},
@@ -43,6 +49,35 @@ class Register extends React.Component{
     })
     
   }
+
+  heckValidity=(check,functionName)=>{
+     if(check){
+         functionName.style.display='none';
+      }
+      else{
+        functionName.style.display='block';
+      }
+  }
+  
+
+
+  onemailChange=(event)=>{
+ 
+   let emailCheck=document.getElementsByClassName('emailCheck');
+   let  Input=event.target.value;
+   let pattern = /^[\w]+@gmail\.com$/;
+   let check=pattern.test(Input);
+   this.checkValidity(check,emailCheck[0])
+  }
+  onPasswordChange=(event)=>{
+   
+    let passwordCheck=document.getElementsByClassName('passwordCheck');
+    let  Input=event.target.value;
+    let pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[!@#$%&]).{6,2000}$/;
+    let check=pattern.test(Input);
+   this.checkValidity(check,passwordCheck[0])
+   }
+ 
 
    render(){
     return(
@@ -62,12 +97,15 @@ class Register extends React.Component{
              <input 
              onChange={this.onEmailRegister}
              className="pa2 input-reset  bg-transparent hover-bg-black hover-white w-150 b--black ba" type="email" name="email-address"  id="email-address"/>
+             <p className='emailCheck'>Please enter a Valid E-mail id.</p>
            </div>
            <div className="mv3">
              <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
              <input
              onChange={this.onPasswordRegister}
               className="b--black pa2 input-reset ba bg-transparent hover-bg-black hover-white w-150" type="password" name="password"  id="password"/>
+              <p className='passwordCheck'>Your password should contain lowercase and uppercase alphabet,special symbol and a 
+              number and should be greater than 6 character</p>
            </div>
          </fieldset>
          <div className="">

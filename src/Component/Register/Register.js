@@ -50,7 +50,7 @@ class Register extends React.Component{
     
   }
 
-  heckValidity=(check,functionName)=>{
+  checkValidity=(check,functionName)=>{
      if(check){
          functionName.style.display='none';
       }

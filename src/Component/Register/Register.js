@@ -51,11 +51,16 @@ class Register extends React.Component{
   }
 
   checkValidity=(check,functionName)=>{
+    let submitButton=document.getElementById('submitButton');
+  
+
      if(check){
          functionName.style.display='none';
+         submitButton.disabled=false;
       }
       else{
         functionName.style.display='block';
+        submitButton.disabled=true;
       }
   }
   
@@ -112,12 +117,13 @@ class Register extends React.Component{
            <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f5 dib" 
            type="submit" 
            value="Register" 
+           id="submitButton" 
            onClick={this.onRegister}
            />
          </div>
          
        </div>
-      </main>
+</main>
       </article>
       )
    }

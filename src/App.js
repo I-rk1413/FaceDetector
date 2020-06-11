@@ -14,7 +14,7 @@ import Register from './Component/Register/Register'
  const initialState= {
   input:'',
   imageURL:'',
-  box:{},
+  box:[],
   route: 'SignIn',
   SignedIn: false,
   user:{
@@ -42,7 +42,10 @@ onInputChange=(event)=>{
 }
 
 calculateFaceLocation=(data)=>{
- const Face= data.outputs[0].data.regions[0].region_info.bounding_box;
+const FaceArray=data.outputs[0].data.regions;
+
+const coordinates=FaceArray.map(item=>{
+ const Face= item.region_info.bounding_box;
  const image=document.getElementById('inputimage');
  const width=Number(image.width);
  const height=Number(image.height);
@@ -53,11 +56,14 @@ calculateFaceLocation=(data)=>{
    bottomRow: height-(Face.bottom_row*height)
  }
 
-}
+})
+return coordinates;
+ }
+
+
 
 displayBox=(box)=>{
-  console.log(box);
-this.setState({box:box});
+  this.setState({box:box});
 }
  
 onSubmit=()=>{
